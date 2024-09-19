@@ -46,7 +46,7 @@ const categoryQueue = {};
 //         ?.split('; ')
 //         .find(row => row.startsWith('token='))
 //         ?.split('=')[1];        
-        
+
 //     if (!token) {
 //         console.log("token not found");
 //         return;
@@ -67,18 +67,18 @@ io.on("connection", (socket) => {
     console.log("User Connected");
 
     socket.on("request_to_play", async (data) => {
-        const { category, username} = data;        
+        const { category, username } = data;
         socket.user = username
         if (!categoryQueue[category]) {
             categoryQueue[category] = [];
         }
 
-        categoryQueue[category].push(socket);  
+        categoryQueue[category].push(socket);
 
         if (categoryQueue[category].length >= 2) {
             const player1 = categoryQueue[category].shift();
-            const player2 = categoryQueue[category].shift();            
-            
+            const player2 = categoryQueue[category].shift();
+
             if (player1.id === player2.id) {
                 return;
             }
@@ -92,8 +92,8 @@ io.on("connection", (socket) => {
                 category: category,
                 questions: question.results,
                 players: [
-                    { id: player1.id, score: 0},
-                    { id: player2.id, score: 0}
+                    { id: player1.id, score: 0 },
+                    { id: player2.id, score: 0 }
                 ],
                 isActive: true
             });
@@ -219,7 +219,7 @@ app.post("/register", async (req, res) => {
 
         await user.save();
 
-        res.json({message: "Successfull"});
+        res.json({ message: "Successfull" });
     } catch (error) {
         console.error(error.message);
         res.status(500).send('Server error');
@@ -227,18 +227,18 @@ app.post("/register", async (req, res) => {
 
 })
 
-app.post("/login", async(req, res) => {
-    const {email, password} = req.body;
+app.post("/login", async (req, res) => {
+    const { email, password } = req.body;
 
     try {
-        let user = await User.findOne({ email });     
-    
+        let user = await User.findOne({ email });
+
         if (!user) {
             return res.status(400).json({ message: 'Invalid Credentials' });
         }
-        
-        const isMatch = await bcrypt.compare(password, user.password);        
-        
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid Credentials' });
         }
@@ -253,15 +253,17 @@ app.post("/login", async(req, res) => {
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' });
 
+        const isProduction = process.env.NODE_ENV === 'production';
+
         res.cookie('token', token, {
-            httpOnly: true,     
-            sameSite: 'None',  
-            secure: false,      
+            httpOnly: true,
+            sameSite: 'None',
+            secure: isProduction,
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
-        
 
-        res.status(200).json({ message: 'Login successful', user});
+
+        res.status(200).json({ message: 'Login successful', user });
 
     } catch (err) {
         console.error(err.message);

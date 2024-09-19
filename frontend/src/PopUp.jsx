@@ -8,7 +8,7 @@ import Wait from "./Wait.jsx";
 import Profile from './Profile.jsx';
 import { useAuth } from './AuthProvider.jsx';
 
-const socket = io("https://mcqbattle-server.vercel.app", {
+const socket = io("https://mcqbattle-api.onrender.com", {
   withCredentials: true, 
   transports: ["websocket"],
 });
