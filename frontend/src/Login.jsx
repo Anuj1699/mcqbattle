@@ -26,7 +26,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const res = await axios.post("http://localhost:5000/login", formData,{
+            const res = await axios.post("https://mcqbattle-server.vercel.app", formData,{
                 headers: {
                     "Content-Type": "application/json"
                 },
