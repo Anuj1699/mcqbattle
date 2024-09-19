@@ -23,7 +23,7 @@ const Register = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         try {
-            const res = await axios.post("https://mcqbattle-server.vercel.app", formData, {
+            const res = await axios.post("https://mcqbattle-server.vercel.app/register", formData, {
                 headers: {
                     "Content-Type": "application/json"
                 }
